@@ -10,7 +10,7 @@ This skill is not to implement the ticket. It assumes the ticket is done and doe
 ## Research
 Via git, Read the current uncommitted and untracked files.
 
-## Validate
+## Sanity Check
 Read the current working ticket, and think about if the uncommitted files are really for that ticket, to ensure this skill isn't called by accident. If it doesn't make sense, abort and tell me what's wrong.
 
 ## Notetaking
