@@ -34,3 +34,5 @@ Tickets are managed inside the Obsidian vault so knowledge and task tracking liv
 Tickets are unordered, which means you might need to read their summaries to decide which to do first yourself. Some tickets might have priority levels to help you make this decision.
 
 Tickets usually have a h1 section `# Summary` at the top. If a ticket doesn't have such a section, the text before the first heading is used as summary.
+
+As tickets are part of the knowledge base, they might have linked to images, to each other, or to external URLs. Make sure you read the details before you try to work on a ticket.
