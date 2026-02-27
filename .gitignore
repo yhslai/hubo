@@ -1,0 +1,4 @@
+# Ignore obsidian UI-related files
+**/.obsidian/workspace.json
+**/.obsidian/workspaces.json
+**/.obsidian/app.json
