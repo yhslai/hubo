@@ -6,22 +6,31 @@ The runtime is .NET 10.
 
 Assuming that the user isn't very familiar with F#, and he's intented to write the code by hand. Instead of bulk editing a lot of files at once, you should present changes in digestible chunks.
 
-Never do destructive changes like `rm` or `git restore`.
+Never do destructive changes like `rm` or `git restore`. You can suggest me do these kinds of commands, but don't run them yourselves.
+
+You should also not use `git add` or `git commit`, unless I specifically ask you to, or you're doing a `ticket done` skill.
 
 
-## Overview
+## ReadMe
 
-In case you lost track, the main purpose, features and directory structure is documented in `OVERVIEW.md`. If this file is not found, it means it's still at very early stage of development and there isn't much for you to refer to.
-
-
-## Tickets
-
-The features to be implemented are stored in `./tickets`. Tickets are unordered, which means you might need to read their summaries to decide which to do first yourself. Some tickets might have priority levels to help you make this decision.
-
-The ready-to-do tickets are stored in `./tickets` without nesting subdirectory. Tickets that are in `./tickets/pending` are NOT ready to be implemented. Tickets that are in `./tickets/done` are finished. These tickets are not for you to do.
+In case you lost track, the main purpose, features and directory structure is documented in `README.md`. If this file is not found, it means it's still at very early stage of development and there isn't much for you to refer to.
 
 
 ## Knowledge Base
 
-The knowledge base is located at `./<project_name>_kb`. It's an Obsidian vault that can be opened in Obsidian with `Start-Process "obsidian://open?vault=<project_name>_kb"`. However you could read the content directly to consult the knowledge base without getting Obsidian involved.
+The unified knowledge base is located at `./hubo_kb`.
 
+You can also read files directly from the repository without Obsidian.
+
+
+## Tickets
+
+Tickets are managed inside the Obsidian vault so knowledge and task tracking live in one place.
+
+- Ready-to-do tickets: `./hubo_kb/tickets/*.md`
+- Not ready yet: `./hubo_kb/tickets/pending/*.md`
+- Finished tickets: `./hubo_kb/tickets/done/*.md`
+
+Tickets are unordered, which means you might need to read their summaries to decide which to do first yourself. Some tickets might have priority levels to help you make this decision.
+
+Tickets usually have a h1 section `# Summary` at the top. If a ticket doesn't have such a section, the text before the first heading is used as summary.
