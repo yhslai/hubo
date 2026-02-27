@@ -1,6 +1,6 @@
 Right now, the tickets are located at `./tickets` while knowledge base is at `./<project_name>_kb` as an Obsidian vault. However, we'd like to manage tickets with Obsidian too. And we'd like to have one single vault for both knowledge base and tickets.
 
-## Done Notes
+# Done Notes
 
 - Moved active and completed tickets under the Obsidian vault path `hubo_kb/tickets/`.
 - Created/used `hubo_kb/tickets/done/` and `hubo_kb/tickets/pending/` as the new lifecycle folders.
