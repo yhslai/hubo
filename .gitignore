@@ -1,7 +1,49 @@
 #
-bin/
+tools/third-party
 
-# Ignore obsidian UI-related files
+# -----------------------------
+# .NET / F# build outputs
+# -----------------------------
+[Bb]in/
+[Oo]bj/
+out/
+artifacts/
+
+# Test & coverage outputs
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# NuGet
+*.nupkg
+*.snupkg
+
+# Logs
+*.log
+
+
+# -----------------------------
+# Obsidian vault local state
+# (keep shareable settings by default)
+# -----------------------------
 **/.obsidian/workspace.json
 **/.obsidian/workspaces.json
 **/.obsidian/app.json
+
+
+# -----------------------------
+# OS / editor junk
+# -----------------------------
+.DS_Store
+Thumbs.db
+
+# JetBrains / Rider / IntelliJ
+.idea/
+*.iml
+
+# Visual Studio
+.vs/
+
+# VS Code
+.vscode/
