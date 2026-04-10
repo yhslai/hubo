@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Hubo Video Downloader",
+  "version": "0.1.0",
+  "description": "Capture current page and send a download request to native host.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "nativeMessaging"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Queue download via Hubo Video Downloader"
+  }
+}

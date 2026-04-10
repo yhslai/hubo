@@ -53,4 +53,5 @@ Thumbs.db
 .vscode/
 
 # Local config
-tools/video_downloader/config/video_downloader.yaml
+VideoDownloader/video_downloader.yaml
+VideoDownloader/proxy/native-messaging-host.json

@@ -1,0 +1,4 @@
+# Local output configuration for VideoDownloader/downloader service.
+# Copy this file to `video_downloader.yaml` and edit paths for your machine.
+
+download_dir: "C:/Users/your-user/Videos/HuboDownloads"
