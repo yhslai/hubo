@@ -72,3 +72,15 @@ Keep it simple: don't add README.md for each components. Just one `VideoDownload
 ## S4: Show download progress
 
 The Downloader should show download progress (the file path, request id, download speed and a updating progress bar). To keep it simple, we just write a new log line every 10% of progress (0% included, but only start logging progress when the download actually started and there are bytes flowing in to avoid misleading), instead of making a self-cleaning TUI.
+
+# Done Notes
+
+Implemented a full `VideoDownloader/` workflow with extension + native host proxy + standalone downloader service:
+
+- Added Edge/Chrome extension (`VideoDownloader/extension`) with toolbar-click capture of `{url, pageHtml, pageTitle, timestamp}`, native-message send, and badge feedback states (`...`, `OK`, `ERR`).
+- Implemented Python native messaging proxy (`VideoDownloader/proxy/host.py`) with Chrome framing I/O, request validation, named-pipe forwarding, and downloader auto-start (Windows Terminal / cmd fallback) when worker is not running.
+- Added native host setup artifacts (`native-messaging-host.template.json`, `native-messaging-host.json`, `proxy_host.cmd`, `register_native_host.ps1`) and a single feature README.
+- Implemented long-running downloader worker (`VideoDownloader/downloader/service.py`) using Windows named pipe IPC, background job threads, site detection, and queue acknowledgements.
+- Added download execution via `yt-dlp` for supported domains (YouTube, Reddit, Redgif, Pornhub, Xvideo) plus Streamtape direct-link extraction through `tools/streamtape_cli.py`.
+- Added YAML config template + local config (`video_downloader.yaml.example`, `video_downloader.yaml`) for output directory and pipe name.
+- Implemented progress logging every 10% with speed-aware filtering, plus completion toast notifications (click opens Explorer with downloaded file selected).
