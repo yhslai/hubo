@@ -34,7 +34,8 @@ Expected payload is either `DownloadRequest` directly or `{ "job": <DownloadRequ
 
 - Proxy now forwards to downloader via named pipe and auto-starts downloader if not running (launches `VideoDownloader/downloader/service.py` directly, preferring `./.venv/Scripts/python.exe`).
 - Extension action shows an intermediate waiting state (`...`) before final ack.
-- Downloader shows a clickable Windows toast when a download finishes (opens Explorer with the file selected, requires `win10toast-click`).
+- Downloader shows a clickable Windows toast when a download finishes (opens Explorer with the file selected, requires `win11toast`).
+- Downloader logs progress every 10% (`job.progress`) with requestId, current file path, and speed.
 - Downloader routing:
   - `python -m yt_dlp` for youtube/reddit/redgif/pornhub/xvideo (and unknown sites)
   - streamtape fallback using `tools/streamtape_cli.py` then `python -m yt_dlp`

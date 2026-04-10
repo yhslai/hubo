@@ -127,6 +127,26 @@ def build_output_template(job: DownloadJob, out_dir: Path) -> str:
     return str(out_dir / f"{safe_timestamp}_{safe_title}-%(id)s.%(ext)s")
 
 
+PROGRESS_PERCENT_PATTERN = re.compile(r"\[download\]\s+(\d+(?:\.\d+)?)%")
+PROGRESS_SPEED_PATTERN = re.compile(r"\bat\s+([^\s]+/s)")
+PROGRESS_TEMPLATE_PATTERN = re.compile(r"PROGRESS\s+([\d.]+)%\s*\|\s*([^|]*)\|\s*(.*)$")
+DESTINATION_PATTERN = re.compile(r"\[download\]\s+Destination:\s+(.+)")
+MERGED_PATTERN = re.compile(r"\[Merger\]\s+Merging formats into\s+\"(.+)\"")
+
+
+def is_known_speed(speed: str | None) -> bool:
+    if not speed:
+        return False
+    normalized = speed.strip().lower()
+    return normalized not in {"unknown b/s", "n/a", "none"}
+
+
+def to_progress_bar(percent: int, width: int = 10) -> str:
+    filled = max(0, min(width, percent // 10))
+    return "█" * filled + "░" * (width - filled)
+
+
+# yt-dlp can download URLs directly, so streamtape is ultimately handled by this too
 def run_yt_dlp_download(config: WorkerConfig, job: DownloadJob, url: str, site: str) -> tuple[int, str | None]:
     out_dir = ensure_output_dir(config)
     output_template = build_output_template(job, out_dir)
@@ -138,6 +158,10 @@ def run_yt_dlp_download(config: WorkerConfig, job: DownloadJob, url: str, site: 
         url,
         "--no-playlist",
         "--restrict-filenames",
+        "--newline",
+        "--progress",
+        "--progress-template",
+        "download:PROGRESS %(progress._percent_str)s|%(progress._speed_str)s|%(progress.filename)s",
         "-o",
         output_template,
         "--print",
@@ -145,20 +169,85 @@ def run_yt_dlp_download(config: WorkerConfig, job: DownloadJob, url: str, site: 
     ]
 
     log_event("subprocess.start", requestId=job.request_id, stage=f"yt-dlp:{site}", command=cmd)
-    result = subprocess.run(cmd, capture_output=True, text=True, check=False)
-    log_event("subprocess.exit", requestId=job.request_id, stage=f"yt-dlp:{site}", returnCode=result.returncode)
+
+    process = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+
+    progress_next_bucket = 10
+    current_file_path: str | None = None
+    output_lines: list[str] = []
+
+    assert process.stdout is not None
+    for raw_line in process.stdout:
+        line = raw_line.strip()
+        if not line:
+            continue
+
+        output_lines.append(line)
+
+        destination_match = DESTINATION_PATTERN.search(line)
+        if destination_match:
+            current_file_path = destination_match.group(1).strip().strip('"')
+
+        merged_match = MERGED_PATTERN.search(line)
+        if merged_match:
+            current_file_path = merged_match.group(1).strip().strip('"')
+
+        template_progress_match = PROGRESS_TEMPLATE_PATTERN.search(line)
+        percent: int | None = None
+        speed: str | None = None
+
+        if template_progress_match:
+            percent = int(float(template_progress_match.group(1)))
+            speed_raw = template_progress_match.group(2).strip()
+            speed = speed_raw or None
+            template_file_path = template_progress_match.group(3).strip()
+            if template_file_path:
+                current_file_path = template_file_path
+        else:
+            percent_match = PROGRESS_PERCENT_PATTERN.search(line)
+            if percent_match:
+                percent = int(float(percent_match.group(1)))
+                speed_match = PROGRESS_SPEED_PATTERN.search(line)
+                speed = speed_match.group(1) if speed_match else None
+
+        if percent is not None and is_known_speed(speed):
+            while progress_next_bucket <= 100 and percent >= progress_next_bucket:
+                log_event(
+                    "job.progress",
+                    requestId=job.request_id,
+                    site=site,
+                    progress=to_progress_bar(progress_next_bucket),
+                    speed=speed,
+                    fileName=Path(current_file_path).name if current_file_path else None,
+                )
+                progress_next_bucket += 10
+
+    process.wait()
+    log_event("subprocess.exit", requestId=job.request_id, stage=f"yt-dlp:{site}", returnCode=process.returncode)
 
     file_path: str | None = None
-    for line in reversed((result.stdout or "").splitlines()):
-        candidate = line.strip()
+    for line in reversed(output_lines):
+        candidate = line.strip().strip('"')
         if candidate and Path(candidate).exists():
             file_path = candidate
             break
 
-    if result.returncode != 0 and result.stderr:
-        log_event("subprocess.stderr", requestId=job.request_id, stage=f"yt-dlp:{site}", stderr=result.stderr[-1200:])
+    if not file_path and current_file_path and Path(current_file_path).exists():
+        file_path = current_file_path
 
-    return result.returncode, file_path
+    if process.returncode != 0:
+        stderr_tail = "\n".join(output_lines[-30:])
+        if stderr_tail:
+            log_event("subprocess.stderr", requestId=job.request_id, stage=f"yt-dlp:{site}", stderr=stderr_tail[-1200:])
+
+    return process.returncode, file_path
 
 
 def open_file_in_explorer(file_path: Path) -> None:

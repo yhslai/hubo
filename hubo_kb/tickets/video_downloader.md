@@ -68,27 +68,7 @@ Keep it simple: don't add README.md for each components. Just one `VideoDownload
 	- No need to show Download Finished on the extension. Download job is fire and forget from the extension's perspective (unless the download can't even start)
 - When the download is finished, Downloader should show system notification, and the notification should be clickable and jump to the download destination folder, the file downloaded selected (there might be a python package can handle that? Survey first)
 
-## S4: Build Edge/Chrome extension UI + messaging
 
+## S4: Show download progress
 
-## S5: Integration, install scripts, and safety checks
-
-- 
-- Add dependency checks:
-  - Python packages in `requirements.txt`
-  - `yt-dlp` availability (or documented install path in config)
-- Add basic end-to-end validation checklist:
-  - Worker auto-start from proxy
-  - Queueing jobs from extension repeatedly
-  - Correct per-site routing and output locations
-- Document known limitations and fallback behavior when a site extractor fails.
-
-## S6: Hardening and quality pass
-
-- Add timeout/retry and duplicate job guard (same URL within short interval).
-- Improve security posture:
-  - Validate native host origin/allowed extension IDs.
-  - Enforce max payload size for HTML.
-- Add lightweight tests for routing/config parsing/path resolution.
-- Final documentation polish (installation, usage, logs, common errors).
-
+The Downloader should show download progress (the file path, request id, download speed and a updating progress bar). To keep it simple, we just write a new log line every 10% of progress (0% included, but only start logging progress when the download actually started and there are bytes flowing in to avoid misleading), instead of making a self-cleaning TUI.
