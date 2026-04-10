@@ -29,3 +29,18 @@ If the version argument is absent, it means that app's path is usually not versi
 Since this is a relatively simple tool, we just do it in one run. For now we only need to support two third-party tools, `git` and `houdini`. `toolPath` should be hardcoded as `tools/third-party` in this repo's home dir.
 
 When called without arguments, print usage.
+
+# Done Notes
+
+Implemented in `tools/path_linker.py`.
+
+- Added CLI with supported apps: `houdini`, `git-bash` (and `git` alias for git-bash).
+- Added Houdini version resolution logic:
+  - Accepts explicit version or `latest`.
+  - Detects latest installed version under `C:\Program Files\Side Effects Software` by parsing `Houdini <version>` directories.
+- Added link creation/replacement behavior for Houdini executables (`houdini`, `hcmd`, `mplay`, `hython`) and `git-bash.exe`.
+- Added safety checks before overwriting existing files:
+  - Replaces only when the existing entry is a symlink that points to the same app.
+  - Warns and skips when target is unrelated or a regular file.
+- Added upgrade/downgrade messaging when replacing Houdini symlinks across versions.
+- Added usage + examples output when called without args, and error handling for unsupported apps or symlink permission issues on Windows.
