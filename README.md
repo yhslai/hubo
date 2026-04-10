@@ -18,4 +18,11 @@ This script will execute Python or Node.js scripts in the `tools` directory. It 
 
 ```powershell
 .\.venv\scripts\activate
+run_script <script_name> [args...]
+```
+
+or directly:
+
+```bash
+./.venv/bin/python <script_path> [args...]
 ```
