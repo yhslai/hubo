@@ -14,14 +14,17 @@ function sendNativeMessage(hostName, payload) {
 }
 
 function setActionFeedback(tabId, label, title) {
-  chrome.action.setBadgeBackgroundColor({ color: label === "OK" ? "#0f9d58" : "#db4437", tabId });
+  const color = label === "OK" ? "#0f9d58" : (label === "..." ? "#fbbc05" : "#db4437");
+  chrome.action.setBadgeBackgroundColor({ color, tabId });
   chrome.action.setBadgeText({ text: label, tabId });
   chrome.action.setTitle({ title, tabId });
 
-  setTimeout(() => {
-    chrome.action.setBadgeText({ text: "", tabId });
-    chrome.action.setTitle({ title: "Queue download via Hubo Video Downloader", tabId });
-  }, 30000);
+  if (label !== "...") {
+    setTimeout(() => {
+      chrome.action.setBadgeText({ text: "", tabId });
+      chrome.action.setTitle({ title: "Queue download via Hubo Video Downloader", tabId });
+    }, 30000);
+  }
 }
 
 async function capturePageHtml(tabId) {
@@ -39,6 +42,8 @@ chrome.action.onClicked.addListener(async (tab) => {
   }
 
   try {
+    setActionFeedback(tabId, "...", "Waiting for downloader response...");
+
     const pageHtml = await capturePageHtml(tabId);
     const payload = {
       url: tab.url,

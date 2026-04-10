@@ -47,20 +47,26 @@ At this step we don't actually make downloader yet. Just ensure that the message
 Keep it simple: don't add README.md for each components. Just one `VideoDownloader/README.md`. The Windows setup script should be super simple and add reg for both Edge and Chrome (instead of taking an argument to specify which browser). Don't add unneeded JSON schema.
 
 
-## S2: Build downloader worker (standalone process)
+## S2: Build downloader (standalone process)
 
-- Implement a Python downloader service process with a simple IPC server (localhost TCP or named pipe abstraction).
-- Worker behavior:
-  - Accept download jobs from proxy.
-  - Route by extractor strategy:
-    - `yt-dlp` for YouTube + Reddit + Redgif + Pornhub + Xvideo (primary path)
-    - Streamtape handler using `tools/streamtape_cli.py` fallback.
-  - Resolve output path using YAML rules and sanitize filenames.
-  - Run each job in background subprocess so worker remains responsive.
-- Add structured logs and clear terminal output so user can keep worker console open.
+- Implement a Python downloader service process with a simple IPC server (named pipe abstraction).
+- Downloader should read config from `video_downloader.yaml`, then:
+	- Waiting for download jobs from Proxy
+	- Use proper tool depending on the site:
+		- `yt-dlp` for Youtube
+		- extract video download url from `tools/streamtape.cli.py` then download
+	- The actual downloading should happen in a separate subprocess so it's not blocking
 
-## S3: Build native messaging proxy executable
 
+## S3: Wire All Components
+
+- The Proxy should find the existing running Downloader, and if none, starts a new one in a new Windows Terminal console
+- The Proxy should return to the Extension about the Downloader's state:
+	- If it cannot find a running Downloader and can't start one, then error saying can't connect to the Downloader
+	- If it successful send a job to the Downloader, then shows what Downloader reports (unsupported url, download started, or other errors)
+	- Since the Downloader might take seconds to parse the web page etc, the Extension icon/message should have an intermediate 'waiting response' state
+	- No need to show Download Finished on the extension. Download job is fire and forget from the extension's perspective (unless the download can't even start)
+- When the download is finished, Downloader should show system notification, and the notification should be clickable and jump to the download destination folder, the file downloaded selected (there might be a python package can handle that? Survey first)
 
 ## S4: Build Edge/Chrome extension UI + messaging
 

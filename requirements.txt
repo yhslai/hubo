@@ -1,3 +1,6 @@
 ﻿yt-dlp==2026.3.17
 beautifulsoup4==4.14.3
 requests==2.32.3
+PyYAML==6.0.2
+win11toast==0.36.3
+setuptools>=70.0.0,<81
