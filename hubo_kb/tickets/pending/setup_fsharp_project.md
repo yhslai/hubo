@@ -1,1 +1,0 @@
-Setup the F# project with a main `hubo` application and a test `hello_world` standalone script. Create a simple `README.md` explaining how to build/execute this project.
