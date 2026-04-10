@@ -11,7 +11,7 @@ When working on a new tool/program/script, consider which language to use:
 
 The repo uses a virtual environment for Python.
 
-Never do destructive changes like `rm` or `git restore`. You can suggest me do these kinds of commands, but don't run them yourselves.
+Never `git restore`. Never remove files that are not managed by `git`. (You can tell me to manually remove them if necessary.)
 
 You should also not use `git add` or `git commit`, unless I specifically ask you to, or you're doing a `ticket done` skill.
 
