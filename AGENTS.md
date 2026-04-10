@@ -1,10 +1,15 @@
 # Hubo
 
-This codebase is written is mostly F#. It might need to call Win32 API.
+This repo is written in Python 3 and C# 14. Assuming .NET 10 runtime is available. Assuming the user is on Windows and mostly use Powershell as shell.
 
-The runtime is .NET 10.
+When working on a new tool/program/script, consider which language to use:
 
-Assuming that the user isn't very familiar with F#, and he's intented to write the code by hand. Instead of bulk editing a lot of files at once, you should present changes in digestible chunks.
+- If its main features require some commonly used Python packages, use Python.
+- If it requires Win32 API, use C#.
+- If it's very complex (potentially needs 10+ source code files), use C#.
+- Otherwise, use your best discretion.
+
+The repo uses a virtual environment for Python.
 
 Never do destructive changes like `rm` or `git restore`. You can suggest me do these kinds of commands, but don't run them yourselves.
 
