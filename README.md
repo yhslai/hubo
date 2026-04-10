@@ -8,7 +8,7 @@ uv pip install -r requirements.txt
 
 `tools` and `tools/third-party` directories of this repo should be in your `$PATH`.
 
-## Python Tools
+## One-Shot Scripts
 
 ```powershell
 run_script <script_name> [args...]
@@ -26,3 +26,7 @@ or directly:
 ```bash
 ./.venv/bin/python <script_path> [args...]
 ```
+
+## Other Programs
+
+- `VideoDownloader/` - A Chrome/Edge extension that downloads videos from Youtube, Reddit, RedGIF, Pornhub, XVideo, and Streamtape. It has a Proxy and a Downloader service as backend.
