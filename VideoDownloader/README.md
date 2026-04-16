@@ -34,3 +34,5 @@ Expected payload is either `DownloadRequest` directly or `{ "job": <DownloadRequ
 
 - Proxy forwards to downloader via named pipe and auto-starts downloader if not running.
 - All downloads go into `default_output_dir`.
+- Built-in supported sites are YouTube, Reddit, RedGIF, XVideo, and Streamtape.
+- You can add extra sites (domain or full URL patterns) via `extra_supported_domains_or_urls` in `video_downloader.yaml`.

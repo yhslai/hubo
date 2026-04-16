@@ -4,3 +4,8 @@
 ipc_pipe_name: "\\\\.\\pipe\\hubo_video_downloader"
 
 default_output_dir: "C:/Users/your-user/Videos/HuboDownloads"
+
+# Optional: additional supported sites handled by yt-dlp.
+# Each entry can be a domain (e.g. "pornhub.com") or a full URL.
+extra_supported_domains_or_urls:
+  - "pornhub.com"

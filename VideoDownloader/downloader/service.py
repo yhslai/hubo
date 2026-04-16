@@ -28,13 +28,14 @@ import yaml
 
 LOGGER = logging.getLogger("video_downloader.worker")
 
-SUPPORTED_SITES = {"youtube", "reddit", "redgif", "pornhub", "xvideo", "streamtape"}
+SUPPORTED_SITES = {"youtube", "reddit", "redgif", "xvideo", "streamtape", "extra"}
 
 
 @dataclass(slots=True)
 class WorkerConfig:
     default_output_dir: Path
     ipc_pipe_name: str
+    extra_supported_hosts: tuple[str, ...]
 
 
 @dataclass(slots=True)
@@ -50,6 +51,41 @@ def log_event(event: str, **fields: Any) -> None:
     LOGGER.info(json.dumps({"event": event, **fields}, ensure_ascii=False))
 
 
+def normalize_extra_supported_hosts(raw_values: Any) -> tuple[str, ...]:
+    if raw_values is None:
+        return ()
+
+    values: list[str]
+    if isinstance(raw_values, str):
+        values = [raw_values]
+    elif isinstance(raw_values, list):
+        values = [str(v) for v in raw_values]
+    else:
+        return ()
+
+    hosts: list[str] = []
+    for raw in values:
+        candidate = raw.strip().lower()
+        if not candidate:
+            continue
+
+        parsed = urlparse(candidate)
+        host = (parsed.hostname or "").strip().lower()
+        if not host:
+            candidate_without_scheme = re.sub(r"^[a-z][a-z0-9+.-]*://", "", candidate)
+            host = re.split(r"[/?#]", candidate_without_scheme, maxsplit=1)[0].strip().lower()
+
+        host = host.split(":", maxsplit=1)[0]
+
+        if host.startswith("www."):
+            host = host[4:]
+
+        if host and host not in hosts:
+            hosts.append(host)
+
+    return tuple(hosts)
+
+
 def load_config(config_path: Path) -> WorkerConfig:
     if not config_path.exists():
         raise FileNotFoundError(f"Config file not found: {config_path}")
@@ -57,9 +93,16 @@ def load_config(config_path: Path) -> WorkerConfig:
     with config_path.open("r", encoding="utf-8") as f:
         raw = yaml.safe_load(f) or {}
 
+    extra_supported_raw = (
+        raw.get("extra_supported_domains_or_urls")
+        or raw.get("extra_supported_domains")
+        or raw.get("extra_supported_urls")
+    )
+
     return WorkerConfig(
         default_output_dir=Path(raw.get("default_output_dir") or raw.get("download_dir") or "./downloads"),
         ipc_pipe_name=str(raw.get("ipc_pipe_name", r"\\.\pipe\hubo_video_downloader")),
+        extra_supported_hosts=normalize_extra_supported_hosts(extra_supported_raw),
     )
 
 
@@ -87,7 +130,7 @@ def sanitize_filename_component(value: str, *, max_length: int = 80) -> str:
     return value
 
 
-def detect_site(url: str) -> str:
+def detect_site(url: str, extra_supported_hosts: tuple[str, ...] = ()) -> str:
     host = (urlparse(url).hostname or "").lower()
     if host.startswith("www."):
         host = host[4:]
@@ -98,12 +141,15 @@ def detect_site(url: str) -> str:
         return "reddit"
     if "redgifs.com" in host:
         return "redgif"
-    if "pornhub.com" in host:
-        return "pornhub"
     if "xvideos.com" in host:
         return "xvideo"
     if "streamtape.com" in host:
         return "streamtape"
+
+    for extra_host in extra_supported_hosts:
+        if host == extra_host or host.endswith(f".{extra_host}"):
+            return "extra"
+
     return "unknown"
 
 
@@ -312,7 +358,7 @@ def run_streamtape_download(config: WorkerConfig, job: DownloadJob, repo_root: P
 
 
 def run_download_job(config: WorkerConfig, job: DownloadJob, repo_root: Path) -> None:
-    site = detect_site(job.url)
+    site = detect_site(job.url, config.extra_supported_hosts)
     log_event("job.started", requestId=job.request_id, site=site, url=job.url)
 
     if site not in SUPPORTED_SITES:
@@ -345,7 +391,7 @@ class JobManager:
             if key not in payload or not isinstance(payload[key], str):
                 raise ValueError(f"Invalid job field: {key}")
 
-        site = detect_site(payload["url"])
+        site = detect_site(payload["url"], self._config.extra_supported_hosts)
         if site not in SUPPORTED_SITES:
             return {
                 "ok": False,

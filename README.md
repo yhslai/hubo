@@ -29,4 +29,4 @@ or directly:
 
 ## Other Programs
 
-- `VideoDownloader/` - A Chrome/Edge extension that downloads videos from Youtube, Reddit, RedGIF, Pornhub, XVideo, and Streamtape. It has a Proxy and a Downloader service as backend.
+- `VideoDownloader/` - A Chrome/Edge extension that downloads videos from Youtube, Reddit, RedGIF, XVideo, and Streamtape, with extra domains/URLs (e.g. Pornhub) configurable in `video_downloader.yaml`. It has a Proxy and a Downloader service as backend.
