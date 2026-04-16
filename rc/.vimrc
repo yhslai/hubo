@@ -9,4 +9,6 @@ set softtabstop=4
 
 set autoindent
 
+set ignorecase smartcase
+
 syntax on
