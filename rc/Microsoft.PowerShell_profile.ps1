@@ -56,3 +56,24 @@ $env:PI_SKIP_VERSION_CHECK = "1"
 
 # For pi
 $env:EDITOR = "notepad"
+
+
+# Unix-like aliases
+
+Function Touch-File
+{
+    $file = $args[0]
+    if($file -eq $null) {
+        throw "No filename supplied"
+    }
+
+    if(Test-Path $file)
+    {
+        (Get-ChildItem $file).LastWriteTime = Get-Date
+    }
+    else
+    {
+        New-Item $file
+    }
+}
+Set-Alias touch Touch-File
