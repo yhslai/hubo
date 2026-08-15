@@ -12,6 +12,9 @@ set incsearch
 " Don't use Ex mode, use Q for formatting.
 map Q gq
 
+" Surround support (S key)
+set surround
+
 
 "" -- Map IDE actions to IdeaVim -- https://jb.gg/abva4t
 "" Map \r to the Reformat Code action
@@ -36,3 +39,5 @@ nnoremap zC :action Macro.FoldCurrentMethod<CR>
 
 " Sweep AI Tab completion mapping
 map <Tab> :action dev.sweep.assistant.autocomplete.edit.AcceptEditCompletionAction<CR>
+
+inoremap <C-S-n> <Up>
