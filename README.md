@@ -27,6 +27,14 @@ or directly:
 ./.venv/bin/python <script_path> [args...]
 ```
 
+## Local Tools and Configuration
+
+- `tools/ahk/general.ahk` - AutoHotkey v2 keyboard remappings.
+- `tools/clean_backups_and_ds.py` - Recursively removes Blender backups, `.kra~`, and `.DS_Store` files from the current directory. Use `run_script clean_backups_and_ds --dry-run` to preview.
+- `tools/images_to_pdf.py` - Converts images in a directory to a PDF. Requires ImageMagick's `magick` command as well as the Python dependencies.
+- `tools/restart_wacom_driver.ps1` - Restarts the Wacom driver service using `gsudo`.
+- `tools/f3d.bat` - Runs F3D from its default installation path.
+
 ## Other Programs
 
 - `VideoDownloader/` - A Chrome/Edge extension that downloads videos from Youtube, Reddit, RedGIF, XVideo, and Streamtape, with extra domains/URLs (e.g. Pornhub) configurable in `video_downloader.yaml`. It has a Proxy and a Downloader service as backend.

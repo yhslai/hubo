@@ -12,8 +12,8 @@
     run
 
 .EXAMPLE
-    # Run the clean_backups.py script with a --dry-run flag
-    run clean_backups --dry-run
+    # Run the clean_backups_and_ds.py script with a --dry-run flag
+    run clean_backups_and_ds --dry-run
 #>
 
 # The '$PSScriptRoot' variable is an automatic variable that contains the
