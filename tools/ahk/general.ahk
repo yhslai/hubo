@@ -41,14 +41,19 @@ CapsLock & l::SendText "{"
 ; SC027 = physical ;/: key on a US keyboard
 CapsLock & SC027::SendText "}"
 
-; CapsLock + O/P/M/E -> _ + - =
+; CapsLock + O/P/M/E/R -> _ + - = |
 CapsLock & o::SendText "_"
 CapsLock & p::SendText "+"
 CapsLock & m::SendText "-"
 CapsLock & e::SendText "="
+CapsLock & r::SendText "|"
 
-; CapsLock + - -> —
-CapsLock & -::SendText "—"
+; CapsLock + . -> >=
+CapsLock & .::SendText ">="
+
+; CapsLock + , -> <=
+CapsLock & ,::SendText "<="
+
 
 ; CapsLock + Left Ctrl -> toggle actual CapsLock state
 CapsLock & LCtrl::{
