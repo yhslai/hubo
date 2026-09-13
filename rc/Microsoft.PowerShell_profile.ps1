@@ -22,11 +22,6 @@ Set-PSReadlineKeyHandler -Key Ctrl+r -Function ReverseSearchHistory
 Set-PSReadlineKeyHandler -Key Ctrl+s -Function ForwardSearchHistory
 Set-PSReadlineKeyHandler -Key Ctrl+f -Function ForwardChar
 
-$env:PATH += ";$HOME\github\little_windows\bin"
-$env:PATH += ";$HOME\github\hubo\tools"
-$env:PATH += ";$HOME\github\hubo\tools\third-party"
-$env:PATH += ";C:\msys64\ucrt64\bin"
-
 function global:prompt {
     $ESC = [char]27
     $loc = $executionContext.SessionState.Path.CurrentLocation

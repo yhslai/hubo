@@ -48,11 +48,17 @@ CapsLock & m::SendText "-"
 CapsLock & e::SendText "="
 CapsLock & r::SendText "|"
 
+; CapsLock + T -> ~
+CapsLock & t::SendText "~"
+
 ; CapsLock + . -> >=
 CapsLock & .::SendText ">="
 
 ; CapsLock + , -> <=
 CapsLock & ,::SendText "<="
+
+; CapsLock + - -> — (em-dash)
+CapsLock & -::SendText "—"
 
 
 ; CapsLock + Left Ctrl -> toggle actual CapsLock state
